@@ -44,5 +44,47 @@ server.post('/api/register', (req, res) => {
   });
 
 
+////////// LOGIN:
+
+  //| POST   | /api/login    | Use the credentials sent inside the `body` to authenticate the user. On successful login, create a new JWT with the user id as the subject and send it back to the client. If login fails, respond with the correct status code and the message: 'You shall not pass!' 
+  
+  function generateToken(user) { 
+    const payload = {
+        subject: user.id, // sub in payload is what the token is about 
+        username: user.username,
+        //..other data would be implemented here  .... secret stays out of this function 
+    }
+
+    const options = {
+        expiresIn: '1d'
+    }
+   
+    return jwt.sign(payload, secret, options)
+}
+
+
+server.post('/api/login', (req, res) => {
+    let { username, password } = req.body;
+  
+    Users.findBy({ username })
+      .first()
+      .then(user => {
+        // check that passwords match
+        if (user && bcrypt.compareSync(password, user.password)) {
+         const token = generateToken(user) // produces  a token 
+          //return token 
+          res
+            .status(200)
+            .json({ message: `Welcome ${user.username}!, have a token...`, token, }); //(token implemented sends token to the client)
+        } else {
+          res.status(401).json({ message: 'Invalid Credentials' });
+        }
+      })
+      .catch(error => {
+        res.status(500).json(error);
+      });
+  });
+
+
 
 module.exports = server; 
