@@ -85,6 +85,44 @@ server.post('/api/login', (req, res) => {
       });
   });
 
+  function restricted(req, res, next) {
+    const token = req.headers.authorization
+        if(token) {
+           jwt.verify(token, secret, (err, decodedToken) => {
+               if(err) {
+               //record the event    
+               res.status(401).json({ message: ' Nice Try!'}) 
+               } else { 
+                  next();       
+               }
+           })
+        } else {
+            res.status(401).json({ message: 'You shall not pass! '})
+          }
+    }
+
+  //GET USERS: 
+  //| GET    | /api/users    | If the user is logged in, respond with an array of all the users contained in the database. If the user is not logged in respond with the correct status code and the message: 'You shall not pass!'. Use this endpoint to verify that the password is hashed before it is saved. |
+
+
+  server.get('/api/users', restricted, (req, res) => {
+    Users.find()
+      .then(users => {
+        res.json(users);
+      })
+      .catch(err => res.send(err));
+  });
+  
+  server.get('/users', restricted, async (req, res) => {
+    try {
+      const users = await Users.find();
+  
+      res.json(users);
+    } catch (error) {
+      res.send(error);
+    }
+  });
+
 
 
 module.exports = server; 
