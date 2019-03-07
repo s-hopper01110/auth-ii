@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 const helmet = require('helmet');
 const cors = require('cors');
@@ -8,7 +10,7 @@ const jwt = require('jsonwebtoken');
 const db = require('./data/dbConfig.js');
 const Users = require('./users/users-model.js');
 
-const secret = 'Naruto'
+const secret = process.env.JWT_SECRET || 'Naruto'
 
 
 const server = express();
@@ -93,6 +95,7 @@ server.post('/api/login', (req, res) => {
                //record the event    
                res.status(401).json({ message: ' Nice Try!'}) 
                } else { 
+                req.decodedJwt = decodedToken
                   next();       
                }
            })
@@ -108,6 +111,7 @@ server.post('/api/login', (req, res) => {
   server.get('/api/users', restricted, (req, res) => {
     Users.find()
       .then(users => {
+        res.json({ users, decodedToken: req.decodedJwt}) 
         res.json(users);
       })
       .catch(err => res.send(err));

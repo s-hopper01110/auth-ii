@@ -9,6 +9,7 @@
     "helmet": "^3.15.1",
     "jsonwebtoken": "^8.5.0",
     "knex": "^0.16.3",
+    "react-router-dom": "^4.3.1",
     "sqlite3": "^4.0.6"
   },
   "devDependencies": {
@@ -19,7 +20,7 @@
   "main": "index.js",
   "scripts": {
     "server": "nodemon index.js",
-    "start":"nose index.js"
+    "start": "nose index.js"
   },
   "repository": "https://github.com/s-hopper01110/auth-ii.git",
   "author": "Sheila <s.hopper01110@gmail.com>",
