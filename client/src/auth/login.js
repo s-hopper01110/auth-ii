@@ -45,6 +45,7 @@ handleSubmit = e => {
     axios.post(endpoint, this.state)
     .then(res => {
         localStorage.setItem('jwt', res.data.token);
+        // this.props.history.push('/users')
     })
     .catch(error => console.log(error))
 }
